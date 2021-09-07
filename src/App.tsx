@@ -9,6 +9,7 @@ import {
 import { Authentication, Home } from "./pages"
 import { UserContext, UserContextType } from './contexts/UserContext';
 import { ExpenseContext, ExpenseContextType, Expense } from './contexts/ExpenseContext';
+import { ExpenseApi } from './api/expenses'
 
 import './App.css';
 
@@ -39,30 +40,57 @@ class App extends React.Component<{}, AppState> {
             },
             expenseState: {
                 expenseList: [],
-                addExpense: (exp: Expense) => {
-                    console.log('Add expense', exp)
+                isLoading: true,
+                addExpense: async(exp: Expense) => {
                     this.setState(({ userState, expenseState }) => ({
                         userState,
                         expenseState: {
                             ...expenseState,
-                            expenseList: expenseState.expenseList.concat([exp])
+                            isLoading: true
+                        }
+                    }))
+                    const list = await ExpenseApi.addExpense(exp)
+                    this.setState(({ userState, expenseState }) => ({
+                        userState,
+                        expenseState: {
+                            ...expenseState,
+                            expenseList: list,
+                            isLoading: false
                         }
                     }))
                 },
-                deleteExpense: (exp: Expense) => {
-                    console.log('Delete expense', exp)
-                    const i = this.state.expenseState.expenseList.findIndex((e: Expense) => e.id === exp.id)
-                    console.log(i)
+                deleteExpense: async(exp: Expense) => {
                     this.setState(({ userState, expenseState }) => ({
                         userState,
                         expenseState: {
                             ...expenseState,
-                            expenseList: expenseState.expenseList.filter(e => e.id !== exp.id)
+                            isLoading: true
+                        }
+                    }))
+                    const list = await ExpenseApi.deleteExpense(exp)
+                    this.setState(({ userState, expenseState }) => ({
+                        userState,
+                        expenseState: {
+                            ...expenseState,
+                            expenseList: list,
+                            isLoading: false
                         }
                     }))
                 },
             }
         }
+    }
+
+    async componentDidMount() {
+        const list = await ExpenseApi.fetchExpenses()
+        this.setState({
+            userState: this.state.userState,
+            expenseState: {
+                ...this.state.expenseState,
+                isLoading: false,
+                expenseList: list
+            }
+        })
     }
 
     render() { 

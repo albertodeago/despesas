@@ -1,5 +1,5 @@
 import React from 'react'
-import { ExpenseContext } from "../contexts/ExpenseContext";
+import { ExpenseContext, Expense } from "../contexts/ExpenseContext";
 
 
 interface HomeState {
@@ -63,19 +63,31 @@ export class Home extends React.Component<{}, HomeState> {
     }
 
     render() {
+        const loadingExpenses = () => (
+            <li>Loading data...</li>
+        )
+        const noExpenses = () => (
+            <li>No expenses yet</li>
+        )
+        const expenses = (expenseList: Array<Expense>, deleteExpense: Function) => (
+            expenseList.map(expense => (
+                <li key={expense.id}>
+                    {expense.label}: <b>{expense.amount}</b> <span onClick={() => deleteExpense(expense)}>x</span>
+                </li>
+            ))
+        )
         return (
             <ExpenseContext.Consumer>
-                {({ expenseList, addExpense, deleteExpense }) => (
+                {({ expenseList, isLoading, addExpense, deleteExpense }) => (
                     <div>
                         <h3>Expense list</h3>
                         <ul>
-                            {expenseList.length === 0
-                                ? (<li>No expenses yet</li>)
-                                : (expenseList.map(expense => (
-                                        <li key={expense.id}>
-                                            {expense.label}: <b>{expense.amount}</b> <span onClick={() => deleteExpense(expense)}>x</span>
-                                        </li>
-                                    )))
+                            {isLoading
+                                ? (loadingExpenses())
+                                : (expenseList.length === 0
+                                    ? (noExpenses())
+                                    : (expenses(expenseList, deleteExpense))
+                                )
                             }
                         </ul>
                         <form onSubmit={(e) => this.onAddExpense(e, addExpense)}>
