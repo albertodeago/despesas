@@ -6,69 +6,53 @@ import {
     Redirect,
     Link
 } from 'react-router-dom';
+import { TypedUseSelectorHook, useSelector } from 'react-redux'
+import type { RootState } from './app/store'
 import { Authentication, Home } from "./pages"
-import { UserContext, UserContextType } from './contexts/UserContext';
 import './App.css';
 
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-class App extends React.Component<{}, UserContextType> {
-    constructor(props: {}) {
-        super(props)
+function App() {
+    const user = useAppSelector(state => state.user.user)
 
-        this.state = {
-            user: null,
-            updateUser: () => {
-                console.log('update user')
-                this.setState(state => ({
-                    user: state.user === null
-                        ? {username: 'Pippo'}
-                        : null
-                }))
-            }
-        }
-    }
+    return (
+        <Router>
+            <div>
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="login">Login</Link>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
 
-    render() { 
-        return (
-            <Router>
-                <div>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="login">Login</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <UserContext.Provider value={this.state}>
-                    <Switch>
-                        <Route
-                            exact
-                            path="/"
-                            render={() => {
-                                return (
-                                    this.state.user
-                                        ? <Redirect to="/home" />
-                                        : <Redirect to="/login" />
-                                )
-                            }}
-                        />
-                        
-                        <Route exact path="/home">
-                            <Home />
-                        </Route>
-                        <Route exact path="/login">
-                            <Authentication />
-                        </Route>
-                    </Switch>
-                </UserContext.Provider>
-            </Router>
-        )
-    }
+            <Switch>
+                <Route
+                    exact
+                    path="/"
+                    render={() => {
+                        return (
+                            user
+                                ? <Redirect to="/home" />
+                                : <Redirect to="/login" />
+                        )
+                    }}
+                />
+                
+                <Route exact path="/home">
+                    <Home />
+                </Route>
+                <Route exact path="/login">
+                    <Authentication />
+                </Route>
+            </Switch>
+        </Router>
+    )
 }
 
 export default App;
