@@ -25,9 +25,7 @@ const PrivateRoute = function({children, ...rest}: any) {
                     />
                 )
             }   
-        >
-
-        </Route>
+        />
     )
 }
 

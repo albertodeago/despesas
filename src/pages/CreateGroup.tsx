@@ -44,13 +44,13 @@ export function CreateGroup() {
                     type="text"
                     disabled
                     value={partecipants}
+                    // TODO: we should let the user 'adding' friends to the group
                     // onChange={(e) => setPartecipants(e.target.value)}
                 />
             </div>
 
             <div>
                 <button
-                    className="button block primary"
                     onClick={() => createGroup({ name, partecipants })}
                     disabled={loading}
                 >

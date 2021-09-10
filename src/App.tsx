@@ -18,7 +18,6 @@ import './App.css';
 function App() {
     const [loading, setLoading] = useState<boolean>(true)
     const [loadingGroups, setLoadingGroups] = useState<boolean>(true)
-    // const [loadingCategories, setLoadingCategories] = useState<boolean>(true)
     const [session, setSession] = useState<any>(null)
 
     useEffect(() => {

@@ -10,8 +10,11 @@ export function CategoryList(props: any) {
     const [categoryList, setCategoryList] = useState<Array<ExpenseCategory>>([])
     
     useEffect(() => {
+        console.log("loading category list")
         if (session?.user && props.selectedGroup?.id !== 'all-group-item') {
             getCategoryList()
+        } else {
+            setCategoryList([])
         }
     }, [session, props.selectedGroup])
 
@@ -19,10 +22,11 @@ export function CategoryList(props: any) {
         setLoading(true)
         try {
             const data = await ExpenseCategoryApi.fetch(props.selectedGroup.id)
-            console.log("Categories:", data)
-            if (data && data.length) {
-                setCategoryList(data as Array<ExpenseCategory>)
-            }
+            console.log(`Categories for ${props.selectedGroup.name}: ${data}`)
+            setCategoryList(data && data.length
+                ? (data as Array<ExpenseCategory>)
+                : []
+            )
         } catch(error: any) {
             alert("Error fetching categories " + error.message)
         } finally {
