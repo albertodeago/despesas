@@ -14,8 +14,8 @@ export function CreateGroup() {
     const createGroup = async(params: {name: string, partecipants: Array<UserId>}) => {
         setLoading(true)
         try {
-            const newGroup = ExpenseGroupsApi.create(Object.assign({}, params, {owner: ownerId}))
-            console.log("Group created")
+            ExpenseGroupsApi.create(Object.assign({}, params, {owner: ownerId}))
+            console.log("CreateGroup::createGroup - Group created")
             // history.push("/") TODO: redirect to the group detail page
         } catch(error: any) {
             alert('Something went wrong creating the group ' + error.message)

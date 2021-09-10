@@ -1,38 +1,33 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { SessionContext } from "../contexts"
 import { ExpenseCategoryApi, ExpenseCategory } from "../api"
 
 export function CategoryList(props: any) {
-    const session = useContext(SessionContext)
-
     const [loading, setLoading] = useState(false)
     const [categoryList, setCategoryList] = useState<Array<ExpenseCategory>>([])
     
     useEffect(() => {
-        console.log("loading category list")
-        if (session?.user && props.selectedGroup?.id !== 'all-group-item') {
+        console.log("CategoryList::useEffect - loading category list")
+        if (props.selectedGroup?.id !== 'all-group-item') {
+            const getCategoryList = async() => {
+                setLoading(true)
+                try {
+                    const data = await ExpenseCategoryApi.fetch(props.selectedGroup.id)
+                    setCategoryList(data && data.length
+                        ? (data as Array<ExpenseCategory>)
+                        : []
+                    )
+                } catch(error: any) {
+                    alert("Error fetching categories " + error.message)
+                } finally {
+                    setLoading(false)
+                }
+            }
             getCategoryList()
         } else {
             setCategoryList([])
         }
-    }, [session, props.selectedGroup])
-
-    const getCategoryList = async() => {
-        setLoading(true)
-        try {
-            const data = await ExpenseCategoryApi.fetch(props.selectedGroup.id)
-            console.log(`Categories for ${props.selectedGroup.name}: ${data}`)
-            setCategoryList(data && data.length
-                ? (data as Array<ExpenseCategory>)
-                : []
-            )
-        } catch(error: any) {
-            alert("Error fetching categories " + error.message)
-        } finally {
-            setLoading(false)
-        }
-    }
+    }, [props.selectedGroup])
 
     return (
         <div>
@@ -43,7 +38,7 @@ export function CategoryList(props: any) {
                     : (
                         categoryList.length === 0
                         ? <li>No categories yet</li>
-                        : categoryList.map((category: any) => ( // TODO: no any dai
+                        : categoryList.map((category: ExpenseCategory) => (
                             <li
                                 key={category.id}
                             >

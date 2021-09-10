@@ -22,9 +22,11 @@ function App() {
 
     useEffect(() => {
         const _session = supabase.auth.session()
+        console.log("App::useEffect - set session", _session)
         setSession(_session)
         setLoading(false)
         supabase.auth.onAuthStateChange((_event, session) => {
+            console.log("App::useEffect::onAuthStateChange - set session", session)
             setSession(session)
         })
     }, [])

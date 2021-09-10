@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext } from "react"
 import {
     ExpenseCategoryApi,
     ExpenseGroup, ExpenseGroupId
@@ -21,7 +21,7 @@ export function CreateCategory() {
         setLoading(true)
         try {
             await ExpenseCategoryApi.create(Object.assign({}, params, {ownerId, groupId: params.groupId}))
-            console.log("Category created")
+            console.log("CreateCategory::createCategory - category created")
         } catch(error: any) {
             alert('Something went wrong creating the category ' + error.message)
         } finally {

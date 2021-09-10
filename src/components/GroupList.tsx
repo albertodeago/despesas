@@ -27,7 +27,7 @@ export function GroupList(props: GroupListProps) {
         const allGroups = [allGroupItem].concat(providedGroups)
         setGroupList(allGroups)
         props.setSelectedGroup(allGroups[0])
-    }, [providedGroups])
+    }, [session, providedGroups])
 
     return (
         <div>
