@@ -1,74 +1,69 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect,
-    Link
+    Redirect
 } from 'react-router-dom';
-import { Authentication, Home } from "./pages"
-import { UserContext, UserContextType } from './contexts/UserContext';
+import { SessionContext } from './contexts';
+import { GroupsProvider } from './contexts/GroupsProvider';
+import { Authentication, Home, Account, CreateGroup, CreateCategory } from "./pages"
+import { Nav } from "./components/Nav"
+import { PrivateRoute } from './router/PrivateRoute';
+import { supabase } from './supabaseClient';
+
 import './App.css';
 
 
-class App extends React.Component<{}, UserContextType> {
-    constructor(props: {}) {
-        super(props)
+function App() {
+    const [loading, setLoading] = useState<boolean>(true)
+    const [loadingGroups, setLoadingGroups] = useState<boolean>(true)
+    // const [loadingCategories, setLoadingCategories] = useState<boolean>(true)
+    const [session, setSession] = useState<any>(null)
 
-        this.state = {
-            user: null,
-            updateUser: () => {
-                console.log('update user')
-                this.setState(state => ({
-                    user: state.user === null
-                        ? {username: 'Pippo'}
-                        : null
-                }))
-            }
-        }
-    }
+    useEffect(() => {
+        const _session = supabase.auth.session()
+        setSession(_session)
+        setLoading(false)
+        supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+    }, [])
 
-    render() { 
-        return (
-            <Router>
-                <div>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="login">Login</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+    return (
+        <div>
+            <SessionContext.Provider value={session}>
+                <GroupsProvider setLoading={setLoadingGroups}>
+                    { (loading || loadingGroups)
+                        ? (<div>Loading...</div>)
+                        : (
+                            <Router>
+                                <Nav />
 
-                <UserContext.Provider value={this.state}>
-                    <Switch>
-                        <Route
-                            exact
-                            path="/"
-                            render={() => {
-                                return (
-                                    this.state.user
-                                        ? <Redirect to="/home" />
-                                        : <Redirect to="/login" />
-                                )
-                            }}
-                        />
-                        
-                        <Route exact path="/home">
-                            <Home />
-                        </Route>
-                        <Route exact path="/login">
-                            <Authentication />
-                        </Route>
-                    </Switch>
-                </UserContext.Provider>
-            </Router>
-        )
-    }
+                                <Switch>
+                                    <Route path="/login">
+                                        { session ? <Redirect to="/" /> : <Authentication /> }
+                                    </Route>
+                                    <PrivateRoute exact path={["/", "/home"]}>
+                                        <Home />
+                                    </PrivateRoute>
+                                    <PrivateRoute path="/account">
+                                        <Account />
+                                    </PrivateRoute>
+                                    <PrivateRoute path="/create-group">
+                                        <CreateGroup />
+                                    </PrivateRoute>
+                                    <PrivateRoute path="/create-category">
+                                        <CreateCategory />
+                                    </PrivateRoute>
+                                </Switch>
+                            </Router>
+                        )
+                    }
+                </GroupsProvider>
+            </SessionContext.Provider>
+        </div>
+    )
 }
 
 export default App;
