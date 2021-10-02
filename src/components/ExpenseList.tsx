@@ -34,7 +34,7 @@ export function ExpenseList(props: ExpenseListProps) {
     }, [groups, props.selectedGroup])
 
     const emptyExpenseListEl = () => <li>No expenses yet</li>
-    const expenseListEl = () => expenseList.map((exp: any) => ( // TODO: no any dai
+    const expenseListEl = () => expenseList.map((exp: Expense) => (
         <li key={exp.id}>{exp.name} - {exp.amount} ({exp.category_id})</li>
     ))
     return (
