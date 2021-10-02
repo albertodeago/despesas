@@ -8,7 +8,14 @@ import {
 import { SessionContext } from './contexts';
 import { GroupsProvider } from './contexts/GroupsProvider';
 import { CategoriesProvider } from './contexts/CategoriesProvider';
-import { Authentication, Home, Account, CreateGroup, CreateCategory } from "./pages"
+import {
+    Authentication,
+    Home,
+    Account,
+    CreateGroup,
+    CreateCategory,
+    CreateExpense
+} from "./pages"
 import { Nav } from "./components/Nav"
 import { PrivateRoute } from './router/PrivateRoute';
 import { supabase } from './supabaseClient';
@@ -59,6 +66,9 @@ function App() {
                                         </PrivateRoute>
                                         <PrivateRoute path="/create-category">
                                             <CreateCategory />
+                                        </PrivateRoute>
+                                        <PrivateRoute path="/create-expense">
+                                            <CreateExpense />
                                         </PrivateRoute>
                                     </Switch>
                                 </Router>

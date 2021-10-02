@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { Link } from "react-router-dom"
-import { GroupsContext } from "../contexts"
+import { CategoriesContext, GroupsContext } from "../contexts"
 import { ExpenseGroup, ExpenseApi, Expense } from "../api"
 
 interface ExpenseListProps {
@@ -8,6 +8,7 @@ interface ExpenseListProps {
 }
 export function ExpenseList(props: ExpenseListProps) {
     const groups = useContext(GroupsContext)
+    const categories = useContext(CategoriesContext)
 
     const [loading, setLoading] = useState(false)
     const [expenseList, setExpenseList] = useState<Array<Expense>>([])
@@ -34,9 +35,13 @@ export function ExpenseList(props: ExpenseListProps) {
     }, [groups, props.selectedGroup])
 
     const emptyExpenseListEl = () => <li>No expenses yet</li>
-    const expenseListEl = () => expenseList.map((exp: any) => ( // TODO: no any dai
-        <li key={exp.id}>{exp.name} - {exp.amount} ({exp.category_id})</li>
-    ))
+    const expenseListEl = () => expenseList.map((exp: Expense) => {
+        const category = categories.find(c => c.id === exp.category_id)        
+        return (
+            <li key={exp.id}>{exp.name} - {exp.amount} ({ category?.name })</li>
+        )
+    })
+
     return (
         <div>
             <h4>Expense list</h4>
