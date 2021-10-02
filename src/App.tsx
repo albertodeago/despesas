@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { SessionContext } from './contexts';
 import { GroupsProvider } from './contexts/GroupsProvider';
+import { CategoriesProvider } from './contexts/CategoriesProvider';
 import { Authentication, Home, Account, CreateGroup, CreateCategory } from "./pages"
 import { Nav } from "./components/Nav"
 import { PrivateRoute } from './router/PrivateRoute';
@@ -18,6 +19,7 @@ import './App.css';
 function App() {
     const [loading, setLoading] = useState<boolean>(true)
     const [loadingGroups, setLoadingGroups] = useState<boolean>(true)
+    const [loadingCategories, setLoadingCategories] = useState<boolean>(true)
     const [session, setSession] = useState<any>(null)
 
     useEffect(() => {
@@ -35,32 +37,34 @@ function App() {
         <div>
             <SessionContext.Provider value={session}>
                 <GroupsProvider setLoading={setLoadingGroups}>
-                    { (loading || loadingGroups)
-                        ? (<div>Loading...</div>)
-                        : (
-                            <Router>
-                                <Nav />
+                    <CategoriesProvider setLoading={setLoadingCategories}>
+                        { (loading || loadingGroups || loadingCategories)
+                            ? (<div>Loading...</div>)
+                            : (
+                                <Router>
+                                    <Nav />
 
-                                <Switch>
-                                    <Route path="/login">
-                                        { session ? <Redirect to="/" /> : <Authentication /> }
-                                    </Route>
-                                    <PrivateRoute exact path={["/", "/home"]}>
-                                        <Home />
-                                    </PrivateRoute>
-                                    <PrivateRoute path="/account">
-                                        <Account />
-                                    </PrivateRoute>
-                                    <PrivateRoute path="/create-group">
-                                        <CreateGroup />
-                                    </PrivateRoute>
-                                    <PrivateRoute path="/create-category">
-                                        <CreateCategory />
-                                    </PrivateRoute>
-                                </Switch>
-                            </Router>
-                        )
-                    }
+                                    <Switch>
+                                        <Route path="/login">
+                                            { session ? <Redirect to="/" /> : <Authentication /> }
+                                        </Route>
+                                        <PrivateRoute exact path={["/", "/home"]}>
+                                            <Home />
+                                        </PrivateRoute>
+                                        <PrivateRoute path="/account">
+                                            <Account />
+                                        </PrivateRoute>
+                                        <PrivateRoute path="/create-group">
+                                            <CreateGroup />
+                                        </PrivateRoute>
+                                        <PrivateRoute path="/create-category">
+                                            <CreateCategory />
+                                        </PrivateRoute>
+                                    </Switch>
+                                </Router>
+                            )
+                        }
+                    </CategoriesProvider>
                 </GroupsProvider>
             </SessionContext.Provider>
         </div>

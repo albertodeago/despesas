@@ -12,7 +12,7 @@ export function GroupsProvider(props: GroupsProviderProps) {
 
     useEffect(() => {
         console.log("GroupsProvider::useEffect::fetching groups")
-        if (session?.user || false) {
+        if (session?.user) {
             ExpenseGroupsApi.fetch(session.user.id)
                 .then(groups => {
                     setGroups(groups)

@@ -1,5 +1,5 @@
 import React from "react"
-import { ExpenseGroup } from "../api"
+import { ExpenseCategory, ExpenseGroup } from "../api"
 
 export type UserId = string
 
@@ -29,8 +29,10 @@ const SessionContext = React.createContext<Session>({})
 
 const GroupsContext = React.createContext<ExpenseGroup[]>([])
 
+const CategoriesContext = React.createContext<ExpenseCategory[]>([])
 
 export {
     SessionContext,
     GroupsContext,
+    CategoriesContext
 }
