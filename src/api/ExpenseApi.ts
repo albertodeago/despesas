@@ -16,6 +16,15 @@ export interface Expense {
     category_id: ExpenseCategoryId
 }
 
+export interface ExpenseCreationData {
+    name: string,
+    amount: number,
+    payers: Object,
+    owner: UserId,
+    group_id: ExpenseGroupId,
+    category_id: ExpenseCategoryId
+}
+
 export const ExpenseApi = {
     fetchExpensesFromAllGroups: async function(groups: Array<ExpenseGroup>): Promise<Array<Expense>> {
         const result = await supabase
@@ -47,11 +56,24 @@ export const ExpenseApi = {
         return data as Array<Expense>
     },
 
-    // async create(): Promise<Expense> {
-    //     return {
+    async create(params: ExpenseCreationData): Promise<Expense> {
+        const result = await supabase
+            .from('expenses')
+            .insert([
+                Object.assign({}, params, {
+                    created_at: new Date(),
+                    updated_at: new Date()
+                })
+            ]);
 
-    //     }
-    // },
+        const { data, error, status } = result
+
+        if (error && status !== 406) {
+            throw Error
+        }
+
+        return data![0] as Expense
+    },
 
     // async update() {
 

@@ -6,8 +6,8 @@ export type ExpenseCategoryId = string
 
 export interface ExpenseCategory {
     id: ExpenseCategoryId,
-    ownerId: UserId,
-    groupId: ExpenseGroupId,
+    owner_id: UserId,
+    group_id: ExpenseGroupId,
     created_at: number,
     updated_at: number,
     name: string,
