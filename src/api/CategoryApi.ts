@@ -1,5 +1,5 @@
 import { supabase } from "../supabaseClient"
-import type { ExpenseGroupId } from './GroupApi'
+import type { ExpenseGroup, ExpenseGroupId } from './GroupApi'
 import type { UserId } from '../contexts'
 
 export type ExpenseCategoryId = string
@@ -17,11 +17,11 @@ export interface ExpenseCategory {
 
 export const ExpenseCategoryApi = {
 
-    fetch: async function(groupId: ExpenseGroupId): Promise<Array<ExpenseCategory>> {
+    fetch: async function(group: ExpenseGroup): Promise<Array<ExpenseCategory>> {
         let { data, error, status } = await supabase
             .from('expense_categories')
             .select('*')
-            .eq('group_id', groupId)
+            .eq('group_id', group.id)
         
         if (error && status !== 406) {
             throw error
@@ -31,7 +31,7 @@ export const ExpenseCategoryApi = {
     },
 
     create: async function(params: {name: string, color: string, keywords: Array<string>, ownerId: UserId, groupId: UserId}) {
-        console.log("creating categoriy", params)
+        console.log("creating category", params)
         let { data, error, status } = await supabase
             .from('expense_categories')
             .insert([{

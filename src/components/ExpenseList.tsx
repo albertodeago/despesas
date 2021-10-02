@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react"
-import { supabase } from "../supabaseClient"
+import { Link } from "react-router-dom"
 import { GroupsContext } from "../contexts"
-import { ExpenseGroup } from "../api"
+import { ExpenseGroup, ExpenseApi, Expense } from "../api"
 
 interface ExpenseListProps {
     selectedGroup: ExpenseGroup
@@ -10,37 +10,20 @@ export function ExpenseList(props: ExpenseListProps) {
     const groups = useContext(GroupsContext)
 
     const [loading, setLoading] = useState(false)
-    const [expenseList, setExpenseList] = useState([])
+    const [expenseList, setExpenseList] = useState<Array<Expense>>([])
     
     useEffect(() => {
+        console.log("ExpenseList::useEffect - loading expense list")
         const getExpenseList = async() => {
             try {
                 setLoading(true)
                 const isAllGroups = props.selectedGroup.id === 'all-group-item'
-                let result
+                const result = await (isAllGroups
+                    ? ExpenseApi.fetchExpensesFromAllGroups(groups)
+                    : ExpenseApi.fetchFromGroup(props.selectedGroup)
+                )
     
-                if (isAllGroups) {
-                    result = await supabase
-                        .from('expenses')
-                        .select('*')
-                        .in('group_id', groups.map(g => g.id))
-                } else {
-                    result = await supabase
-                        .from('expenses')
-                        .select('*')
-                        .eq('group_id', props.selectedGroup.id)
-                }
-                let { data, error, status } = result
-                
-                if (error && status !== 406) {
-                    throw error
-                }
-                if (data) {
-                    console.log("ExpenseList::getExpenseList - got expenses", data)
-                    setExpenseList(data as [])
-                } else {
-                    setExpenseList([])
-                }
+                setExpenseList(result)
             } catch(error:any) {
                 alert('Something went wrong fetching the expense list' + error.message)
             } finally {
@@ -66,6 +49,7 @@ export function ExpenseList(props: ExpenseListProps) {
                             : expenseListEl()
                     )
                 }
+                <li><Link to="/create-expense">Add expense</Link></li>
             </ul>
         </div>
     )

@@ -12,7 +12,7 @@ export function CategoryList(props: any) {
             const getCategoryList = async() => {
                 setLoading(true)
                 try {
-                    const data = await ExpenseCategoryApi.fetch(props.selectedGroup.id)
+                    const data = await ExpenseCategoryApi.fetch(props.selectedGroup)
                     setCategoryList(data && data.length
                         ? (data as Array<ExpenseCategory>)
                         : []
@@ -32,23 +32,26 @@ export function CategoryList(props: any) {
     return (
         <div>
             <h4>Category list</h4>
-            <ul>
-                { loading
-                    ? <li>Loading categories...</li>
-                    : (
-                        categoryList.length === 0
-                        ? <li>No categories yet</li>
-                        : categoryList.map((category: ExpenseCategory) => (
-                            <li
-                                key={category.id}
-                            >
-                                {category.name}
-                            </li>
-                        ))
-                    )
-                }
-                <li><Link to="/create-category">Create a category</Link></li>
-            </ul>
+            { props.selectedGroup.id === 'all-group-item'
+                ? <div>no categories looking at all expenses</div>
+                : <ul>
+                    { loading
+                        ? <li>Loading categories...</li>
+                        : (
+                            categoryList.length === 0
+                            ? <li>No categories yet</li>
+                            : categoryList.map((category: ExpenseCategory) => (
+                                <li
+                                    key={category.id}
+                                >
+                                    {category.name}
+                                </li>
+                            ))
+                        )
+                    }
+                    <li><Link to="/create-category">Create a category</Link></li>
+                </ul>
+            }
         </div>
     )
 }
