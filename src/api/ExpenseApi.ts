@@ -1,85 +1,90 @@
-import { ExpenseCategoryId, ExpenseGroup, ExpenseGroupId } from "."
-import { UserId } from "../contexts"
-import { supabase } from "../supabaseClient"
+import { ExpenseCategoryId, ExpenseGroup, ExpenseGroupId } from ".";
+import { UserId } from "../contexts";
+import { supabase } from "../supabaseClient";
 
-export type ExpenseId = string
+export type ExpenseId = string;
 
 export interface Expense {
-    id: ExpenseId,
-    created_at: number,
-    updated_at: number,
-    name: string,
-    amount: number,
-    payers: Object, // TODO: type this shit
-    owner: UserId,
-    group_id: ExpenseGroupId,
-    category_id: ExpenseCategoryId
+  id: ExpenseId;
+  created_at: number;
+  updated_at: number;
+  name: string;
+  amount: number;
+  payers: Object; // TODO: type this shit
+  owner: UserId;
+  group_id: ExpenseGroupId;
+  category_id: ExpenseCategoryId;
 }
 
 export interface ExpenseCreationData {
-    name: string,
-    amount: number,
-    payers: Object,
-    owner: UserId,
-    group_id: ExpenseGroupId,
-    category_id: ExpenseCategoryId
+  name: string;
+  amount: number;
+  payers: Object;
+  owner: UserId;
+  group_id: ExpenseGroupId;
+  category_id: ExpenseCategoryId;
 }
 
 export const ExpenseApi = {
-    fetchExpensesFromAllGroups: async function(groups: Array<ExpenseGroup>): Promise<Array<Expense>> {
-        const result = await supabase
-            .from('expenses')
-            .select('*')
-            .in('group_id', groups.map(g => g.id))
+  fetchExpensesFromAllGroups: async function (
+    groups: Array<ExpenseGroup>
+  ): Promise<Array<Expense>> {
+    const result = await supabase
+      .from("expenses")
+      .select("*")
+      .in(
+        "group_id",
+        groups.map((g) => g.id)
+      );
 
-        let { data, error, status } = result
-            
-        if (error && status !== 406) {
-            throw error
-        }
+    let { data, error, status } = result;
 
-        return data as Array<Expense>
-    },
+    if (error && status !== 406) {
+      throw error;
+    }
 
-    fetchFromGroup: async function(group: ExpenseGroup): Promise<Array<Expense>> {
-        const result = await supabase
-            .from('expenses')
-            .select('*')
-            .eq('group_id', group.id)
+    return data as Array<Expense>;
+  },
 
-        let { data, error, status } = result
-            
-        if (error && status !== 406) {
-            throw error
-        }
+  fetchFromGroup: async function (
+    group: ExpenseGroup
+  ): Promise<Array<Expense>> {
+    const result = await supabase
+      .from("expenses")
+      .select("*")
+      .eq("group_id", group.id);
 
-        return data as Array<Expense>
-    },
+    let { data, error, status } = result;
 
-    async create(params: ExpenseCreationData): Promise<Expense> {
-        const result = await supabase
-            .from('expenses')
-            .insert([
-                Object.assign({}, params, {
-                    created_at: new Date(),
-                    updated_at: new Date()
-                })
-            ]);
+    if (error && status !== 406) {
+      throw error;
+    }
 
-        const { data, error, status } = result
+    return data as Array<Expense>;
+  },
 
-        if (error && status !== 406) {
-            throw Error
-        }
+  async create(params: ExpenseCreationData): Promise<Expense> {
+    const result = await supabase.from("expenses").insert([
+      Object.assign({}, params, {
+        created_at: new Date(),
+        updated_at: new Date(),
+      }),
+    ]);
 
-        return data![0] as Expense
-    },
+    const { data, error, status } = result;
 
-    // async update() {
+    if (error && status !== 406) {
+      throw Error;
+    }
 
-    // },
+    return data![0] as Expense;
+  },
 
-    // async delete() {
+  // async update() {
 
-    // }
-}
+  // },
+
+  // async delete() {
+
+  // }
+};

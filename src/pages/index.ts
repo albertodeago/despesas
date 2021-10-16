@@ -6,10 +6,10 @@ import { CreateCategory } from "./CreateCategory";
 import { CreateExpense } from "./CreateExpense";
 
 export {
-    Home,
-    Authentication,
-    Account,
-    CreateGroup,
-    CreateCategory,
-    CreateExpense,
-}
+  Home,
+  Authentication,
+  Account,
+  CreateGroup,
+  CreateCategory,
+  CreateExpense,
+};
