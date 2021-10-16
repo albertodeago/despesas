@@ -1,5 +1,6 @@
 import { useHistory, Route, Redirect } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { Sidebar } from "../components/sidebar";
 
 const PrivateRoute = function ({ children, ...rest }: any) {
   const session = supabase.auth.session();
@@ -10,21 +11,24 @@ const PrivateRoute = function ({ children, ...rest }: any) {
   }
 
   return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        session ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
+    <>
+      <Sidebar />
+      <Route
+        {...rest}
+        render={({ location }) =>
+          session ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location },
+              }}
+            />
+          )
+        }
+      />
+    </>
   );
 };
 
