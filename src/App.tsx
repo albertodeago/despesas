@@ -16,7 +16,6 @@ import {
   CreateCategory,
   CreateExpense,
 } from "./pages";
-import { Nav } from "./components/Nav";
 import { PrivateRoute } from "./router/PrivateRoute";
 import { supabase } from "./supabaseClient";
 
@@ -48,8 +47,6 @@ function App() {
               <div>Loading...</div>
             ) : (
               <Router>
-                <Nav />
-
                 <Switch>
                   <Route path="/login">
                     {session ? <Redirect to="/" /> : <Authentication />}
