@@ -1,6 +1,6 @@
 import { useHistory, Route, Redirect } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { Sidebar } from "../components/sidebar";
+import { Sidebar, Header } from "../components";
 
 const PrivateRoute = function ({ children, ...rest }: any) {
   const session = supabase.auth.session();
@@ -12,6 +12,7 @@ const PrivateRoute = function ({ children, ...rest }: any) {
 
   return (
     <>
+      <Header />
       <Sidebar />
       <Route
         {...rest}
