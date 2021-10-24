@@ -20,7 +20,7 @@ export function ExpenseList(props: ExpenseListProps) {
         setLoading(true);
         const isAllGroups = props.selectedGroup.id === "all-group-item";
         const result = await (isAllGroups
-          ? ExpenseApi.fetchExpensesFromAllGroups(groups)
+          ? ExpenseApi.fetchExpensesFromAllGroups(groups.slice(1))
           : ExpenseApi.fetchFromGroup(props.selectedGroup));
 
         setExpenseList(result);

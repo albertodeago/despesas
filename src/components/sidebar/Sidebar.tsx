@@ -1,7 +1,9 @@
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { slide as Menu } from "react-burger-menu";
 import "./sidebar.css";
-import React from "react";
+
+import { useGroups } from "../../hooks";
 
 interface SidebarLinkProps {
   onClick: () => void;
@@ -21,6 +23,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = function ({
 };
 
 export function Sidebar() {
+  const { groups, selectedGroup, setSelectedGroup } = useGroups();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const onClick = () => setIsOpen(false);
@@ -31,9 +34,13 @@ export function Sidebar() {
     <Menu isOpen={isOpen} onStateChange={(state) => handleStateChange(state)}>
       <nav>
         <ul>
-          <SidebarLink onClick={onClick} to="/" label="Home" />
-          <SidebarLink onClick={onClick} to="login" label="Login" />
           <SidebarLink onClick={onClick} to="account" label="Account" />
+          <SidebarLink onClick={onClick} to="/" label="Home" />
+          {groups.map((g) => (
+            <li key={g.id} onClick={() => setSelectedGroup(g)}>
+              {selectedGroup.id === g.id ? <b>{g.name}</b> : g.name}
+            </li>
+          ))}
         </ul>
       </nav>
     </Menu>

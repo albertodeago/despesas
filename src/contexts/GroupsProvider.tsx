@@ -15,7 +15,17 @@ export function GroupsProvider(props: GroupsProviderProps) {
     if (session?.user) {
       ExpenseGroupsApi.fetch(session.user.id)
         .then((groups) => {
-          setGroups(groups);
+          const allGroupItem: ExpenseGroup = {
+            id: "all-group-item",
+            created_at: Date.now(),
+            image_url: "",
+            name: "Expenses of all groups",
+            owner: session!.user!.id,
+            partecipants: [session!.user!.id],
+            updated_at: Date.now(),
+          };
+
+          setGroups([allGroupItem].concat(groups));
           props.setLoading(false);
         })
         .catch((error) => alert("Error fetching groups " + error.message));

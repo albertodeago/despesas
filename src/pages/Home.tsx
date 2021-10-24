@@ -4,10 +4,13 @@ import { GroupList } from "../components/GroupList";
 import { ExpenseList } from "../components/ExpenseList";
 import { CategoryList } from "../components/CategoryList";
 
+import { useGroups } from "../hooks";
+
 export function Home() {
   const session = useContext(SessionContext);
 
-  const [selectedGroup, setSelectedGroup] = useState(null);
+  // const [selectedGroup, setSelectedGroup] = useState(null);
+  const { groups, selectedGroup, setSelectedGroup } = useGroups();
 
   return (
     <div>

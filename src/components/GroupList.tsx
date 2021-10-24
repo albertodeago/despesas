@@ -14,19 +14,8 @@ export function GroupList(props: GroupListProps) {
   const [groupList, setGroupList] = useState<ExpenseGroup[]>([]);
 
   useEffect(() => {
-    // TODO: is this right here or should it be in the provider?
-    const allGroupItem: ExpenseGroup = {
-      id: "all-group-item",
-      created_at: Date.now(),
-      image_url: "",
-      name: "Expenses of all groups",
-      owner: session!.user!.id,
-      partecipants: [session!.user!.id],
-      updated_at: Date.now(),
-    };
-    const allGroups = [allGroupItem].concat(providedGroups);
-    setGroupList(allGroups);
-    props.setSelectedGroup(allGroups[0]);
+    setGroupList(providedGroups);
+    props.setSelectedGroup(providedGroups[0]);
   }, [session, providedGroups]);
 
   return (
