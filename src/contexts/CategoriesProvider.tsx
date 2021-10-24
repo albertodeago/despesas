@@ -15,7 +15,8 @@ export function CategoriesProvider(props: CategoriesProviderProps) {
   useEffect(() => {
     console.log("CategoriesProvider::useEffect::fetching categories");
     if (groups && groups.length) {
-      const promises = groups.map((g) => ExpenseCategoryApi.fetch(g));
+      const realGroups = groups.slice(1);
+      const promises = realGroups.map((g) => ExpenseCategoryApi.fetch(g));
       Promise.all(promises)
         .then((res) => {
           setCategories(res.flat());
