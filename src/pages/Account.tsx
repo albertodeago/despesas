@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { SessionContext } from "../contexts";
 import { supabase, getUser } from "../supabaseClient";
 
@@ -9,6 +10,7 @@ interface Profile {
 }
 
 export function Account() {
+  const history = useHistory();
   const session: any = useContext(SessionContext);
 
   const [loading, setLoading] = useState(false);
@@ -73,6 +75,15 @@ export function Account() {
     }
   }
 
+  async function logout(): Promise<void> {
+    try {
+      await supabase.auth.signOut();
+      history.push("/login");
+    } catch (e) {
+      alert("Someting went wrong logging out: " + e);
+    }
+  }
+
   return (
     <div>
       <div>
@@ -114,10 +125,7 @@ export function Account() {
       </div>
 
       <div>
-        <button
-          className="button block"
-          onClick={() => supabase.auth.signOut()}
-        >
+        <button className="button block" onClick={() => logout()}>
           Sign Out
         </button>
       </div>
